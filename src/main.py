@@ -9,7 +9,8 @@ from src.latex_compiler import compile_latex_to_pdf
 
 load_dotenv()
 
-def main(company, position, output_path):
+def main(company, position):
+    output_path = os.getenv("OUTPUT_PATH")
     resume_path = os.path.join(output_path, "main.tex")
     job_description_path = os.path.join(output_path, company, f"{position}.rtf")
     tailored_resume_tex_path = os.path.join(output_path, company, f"{position}.tex")
@@ -41,4 +42,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Call main function with parsed arguments
-    main(args.company, args.position, os.getenv("OUTPUT_PATH"))
+    main(args.company, args.position)

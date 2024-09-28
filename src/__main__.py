@@ -12,4 +12,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Call main function with parsed arguments
-    main(args.company, args.position, os.getenv("OUTPUT_PATH"))
+    main(args.company, args.position)
