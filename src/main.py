@@ -11,7 +11,7 @@ load_dotenv()
 
 def main(company, position):
     output_path = os.getenv("OUTPUT_PATH")
-    resume_path = os.path.join(output_path, "main.tex")
+    resume_path = os.path.join(output_path, "latex-resume-main", "main.tex")
     job_description_path = os.path.join(output_path, company, f"{position}.rtf")
     tailored_resume_tex_path = os.path.join(output_path, company, f"{position}.tex")
 
