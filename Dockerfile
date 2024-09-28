@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
     --no-install-recommends
 
 # Install LaTeX (BasicTeX equivalent)
-RUN apt-get update && apt-get install -y texlive texlive-latex-extra texlive-fonts-recommended
+RUN apt-get update && apt-get install -y texlive texlive-latex-extra texlive-fonts-recommended pymupdf
 
 # Set the working directory in the container
 WORKDIR /app

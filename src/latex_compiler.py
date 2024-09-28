@@ -36,7 +36,7 @@ def move_auxiliary_files(output_directory):
     os.makedirs(aux_folder, exist_ok=True)
     
     # Define auxiliary file extensions
-    aux_extensions = [".aux", ".log", ".out", ".toc", ".synctex.gz", "fls"]
+    aux_extensions = [".aux", ".log", ".out", ".toc", ".synctex.gz", "fls", "fdb_latexmk"]
     
     # Move each auxiliary file to the aux_files folder
     for filename in os.listdir(output_directory):
