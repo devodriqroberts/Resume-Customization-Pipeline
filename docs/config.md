@@ -19,7 +19,9 @@ Add the following variables to the `.env` file:
 ```dotenv
 OPENAI_API_KEY=<Your OpenAI API Key>
 OUTPUT_PATH=<Path where input/output files are stored>
-SYSTEM_ROLE=<System role for OpenAI API interactions>
+SYSTEM_ROLE_POSITION=<Role for extracting position>
+SYSTEM_ROLE_<SECTION>=<Role for tailoring each resume section>
+SYSTEM_LATEX_DOC_STRUCTURE=<Role for maintaining LaTeX structure>
 ```
 
 ### Variable Descriptions
@@ -58,12 +60,15 @@ The tool assumes a specific structure for your resume and job description files,
 
 ```
 <OUTPUT_PATH>/
-├── main.tex                      # Your base LaTeX resume
-├── CompanyName/
-│   ├── PositionTitle.rtf         # Job description for a specific position
-│   └── PositionTitle.tex         # Generated tailored LaTeX file
-│   └── PositionTitle.pdf         # Compiled tailored PDF resume
-│   └── aux_files/                # Folder for auxiliary LaTeX files (generated during compilation)
+├── latex-resume/
+│   └── main.tex                  # Base LaTeX resume template
+├── <date>/
+│   └── <CompanyName>/
+│       ├── <PositionTitle>/      # Subfolder for each position
+│       │   ├── job_description.pdf
+│       │   ├── <PositionTitle>.tex
+│       │   └── <PositionTitle>.pdf
+│       └── aux_files/            # Auxiliary LaTeX files from compilationcompilation)
 ```
 
 ### File Descriptions
@@ -73,18 +78,13 @@ The tool assumes a specific structure for your resume and job description files,
 
   - Place your `main.tex` file in the root of `OUTPUT_PATH`.
 
-- **`<CompanyName>/<PositionTitle>.rtf`**:  
-  Each job description should be saved as an `.rtf` file within a folder named after the company. The `.rtf` filename should match the job position.
-
-  - For example, if you are applying for a Software Engineer position at Google, the file path should be:
-    ```
-    <OUTPUT_PATH>/Google/SoftwareEngineer.rtf
-    ```
+- **`<CompanyName>/<PositionTitle>/`**: Contains job description, tailored LaTeX, and compiled PDF.
+- **`aux_files/`**: Stores auxiliary files (e.g., .aux, .log, .out) generated during LaTeX compilation.
 
 - **Output Files (`.tex` and `.pdf`)**:  
   After running the tool, the tailored resume and compiled PDF will be saved in the corresponding company folder.
-  - **Tailored LaTeX File**: `<CompanyName>/<PositionTitle>.tex`
-  - **Compiled PDF**: `<CompanyName>/<PositionTitle>.pdf`
+  - **Tailored LaTeX File**: `<date>/<CompanyName>/<PositionTitle>/<PositionTitle>.tex`
+  - **Compiled PDF**: `<date>/<CompanyName>/<PositionTitle>/<PositionTitle>.pdf`
 
 ## Auxiliary File Handling
 
@@ -93,7 +93,7 @@ During LaTeX compilation, several auxiliary files (e.g., `.aux`, `.log`, `.out`)
 Example:
 
 ```
-<OUTPUT_PATH>/Google/aux_files/
+<OUTPUT_PATH>/<date>/<CompanyName>/aux_files/
 ```
 
 ## Additional Configuration Notes
