@@ -22,7 +22,7 @@ This document provides solutions to common issues you may encounter while using 
 
 ```
 
-<OUTPUT_PATH>/<company>/<position>.rtf
+<OUTPUT_PATH>/<date>/<company>/<position>/job_description.pdf
 
 ```
 
@@ -34,8 +34,7 @@ This document provides solutions to common issues you may encounter while using 
 
 **Solution**:
 
-- Confirm that the `.rtf` file exists and is not corrupted.
-- Ensure the file is saved in RTF format, not another format like `.txt` or `.docx`.
+- Confirm that the `.pdf` file exists and is not corrupted.
 - Verify the file path and ensure that it matches the command-line input for `company` and `position`.
 
 ---
@@ -125,9 +124,9 @@ sudo tlmgr install fullpage
 
 4. **Manual Testing**  
    If errors persist, try running parts of the code manually:
-   - **Check RTF Content**: Open the `.rtf` file and confirm its content is correctly formatted.
+   - **Check RTF Content**: Open the `.pdf` file and confirm its content is correctly formatted.
    - **Compile LaTeX Separately**: Run `pdflatex` manually on the `.tex` file to isolate LaTeX issues.
 
 ---
 
-If none of the solutions resolve your issue, please consider checking the documentation for the libraries used (e.g., `OpenAI`, `striprtf`, LaTeX distribution) or submit a new issue on the GitHub repository.
+If none of the solutions resolve your issue, please consider checking the documentation for the libraries used (e.g., `OpenAI`, LaTeX distribution) or submit a new issue on the GitHub repository.
