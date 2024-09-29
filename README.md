@@ -77,12 +77,6 @@ The Automated Resume Tailoring Tool streamlines the process of tailoring your La
 1. **Base Resume (`main.tex`)**:
    Place your LaTeX resume file in the directory specified by `OUTPUT_PATH`.
 
-2. **Job Descriptions (`.rtf` files)**:
-   Create subfolders for each company and add job description files:
-   ```
-   <OUTPUT_PATH>/<CompanyName>/<PositionTitle>.rtf
-   ```
-
 ### Run the Tool
 
 You can run the tool from either the project root or the `src/` directory:
@@ -90,32 +84,32 @@ You can run the tool from either the project root or the `src/` directory:
 - **From Project Root**:
 
   ```bash
-  python -m src <company_name> <position_name>
+  python -m src <company_name> <job_url>
   ```
 
   Example:
 
   ```bash
-  python -m src Google SoftwareEngineer
+  python -m src Google "https://www.google.com/careers/job123"
   ```
 
 - **From `src/` Directory**:
 
   ```bash
   cd src
-  python main.py <company_name> <position_name>
+  python main.py <company_name> <job_url>
   ```
 
   Example:
 
   ```bash
-  python main.py Google SoftwareEngineer
+  python main.py Google "https://www.google.com/careers/job123"
   ```
 
 ### Output
 
-- **Tailored LaTeX File**: `<OUTPUT_PATH>/<CompanyName>/<PositionTitle>.tex`
-- **Compiled PDF**: `<OUTPUT_PATH>/<CompanyName>/<PositionTitle>.pdf`
+- **Tailored LaTeX File**: `<OUTPUT_PATH>/<Date>/<CompanyName>/<PositionTitle>.tex`
+- **Compiled PDF**: `<OUTPUT_PATH>/<Date>/<CompanyName>/<PositionTitle>.pdf`
 - **Auxiliary LaTeX Files**: Moved to an `aux_files/` directory within each company's folder.
 
 ## File Structure
