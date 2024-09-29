@@ -19,7 +19,7 @@ def main(company, job_url):
     job_description_path = os.path.join(applications_path, "job_description.pdf")
 
     # Save job description as PDF file
-    # save_description_pdf(job_url, job_description_path)
+    save_description_pdf(job_url, job_description_path)
 
     # Read the LaTeX resume
     resume_text = read_file_content(resume_path)
