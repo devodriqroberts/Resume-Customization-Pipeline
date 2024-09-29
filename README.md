@@ -61,7 +61,9 @@ The Automated Resume Tailoring Tool streamlines the process of tailoring your La
    ```dotenv
    OPENAI_API_KEY=<Your OpenAI API Key>
    OUTPUT_PATH=<Path where input/output files are stored>
-   SYSTEM_ROLE=<System role for OpenAI API>
+   SYSTEM_ROLE_POSITION=<System role for extracting position>
+   SYSTEM_ROLE_<SECTION>=<System role for tailoring each resume section>
+   SYSTEM_LATEX_DOC_STRUCTURE=<System role for maintaining LaTeX structure>
    ```
 
    Example:
@@ -70,6 +72,8 @@ The Automated Resume Tailoring Tool streamlines the process of tailoring your La
    OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
    OUTPUT_PATH=/Users/yourusername/Documents/resume-output
    SYSTEM_ROLE=Assistant for resume tailoring
+   SYSTEM_ROLE_<SECTION>=<System role for tailoring each resume section>
+   SYSTEM_LATEX_DOC_STRUCTURE=<System role for maintaining LaTeX structure>
    ```
 
 ## Usage
@@ -144,7 +148,8 @@ Make sure to set up your `.env` file correctly:
 
 - **`OPENAI_API_KEY`**: Your OpenAI API key for accessing the API.
 - **`OUTPUT_PATH`**: Directory path for input (LaTeX and job description files) and output (tailored `.tex` and `.pdf`).
-- **`SYSTEM_ROLE`**: The context or role for the OpenAI assistant when tailoring the resume.
+- **`SYSTEM_ROLE_<SECTION>`**: Tailoring context for different sections of the resume.
+- **`SYSTEM_LATEX_DOC_STRUCTURE`**: Guidelines for maintaining LaTeX formatting.
 
 For more details on setting up and configuring the tool, refer to the [Getting Started](docs/getting_started.md) and [Config](docs/config.md) documents.
 
