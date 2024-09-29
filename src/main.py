@@ -1,12 +1,13 @@
 import os
-import json
+import shutil
 import argparse
 from dotenv import load_dotenv
+from datetime import datetime
 
 from src.resume_parser import read_file_content, read_pdf_content
-from src.api_handler import tailor_resume
-from src.utils import save_output, remove_first_line, save_description_pdf
-from src.latex_compiler import compile_latex_to_pdf
+from src.api_handler import tailor_resume, extract_job_position
+from src.utils import save_output, save_description_pdf, extract_section_text, build_ordered_section_content
+from src.latex_compiler import compile_latex_to_pdf, move_auxiliary_files
 
 load_dotenv()
 
@@ -14,51 +15,69 @@ def main(company, job_url):
     output_path = os.getenv("OUTPUT_PATH")
     resume_path = os.path.join(output_path, "latex-resume", "main.tex")
 
-    applications_path = os.path.join(output_path, "applications", company)
+    applications_path = os.path.join(output_path, "applications", str(datetime.today().date()), company)
     job_description_path = os.path.join(applications_path, "job_description.pdf")
 
     # Save job description as PDF file
-    save_description_pdf(job_url, job_description_path)
+    # save_description_pdf(job_url, job_description_path)
 
     # Read the LaTeX resume
     resume_text = read_file_content(resume_path)
     
     # Extract the job description text from the saved file
     job_description = read_pdf_content(job_description_path)
+
+    # Extract position
+    position = extract_job_position(job_description)
+    if not position:
+        raise Exception("No position returned")
     
-    # Tailor the resume to the job description using OpenAI API
-    json_response = tailor_resume(resume_text, job_description)
-
-    if not json_response.strip():
-        raise ValueError("Received an empty response from tailor_resume")
-
-    try:
-        json_response = json_response.strip("json")
-        json_response = json_response.strip()
-
-        # Escape backslashes
-        escaped_json_response = json_response.replace("\\", "\\\\")
-        escaped_json_response = escaped_json_response.replace("\n", "\\n")
-        response = json.loads(json_response)
-    except json.JSONDecodeError as e:
-        raise ValueError(f"Failed to parse JSON response: {e}")
-
-    # Extract necessary fields
-    tailored_resume = response["resume"]
-    position = response["position"]
-
     # Sanitize and format position name
     position = position.split()
     position = ["".join(char for char in word if char.isalnum()) for word in position]
     position = "_".join(word.lower() for word in position)
 
-    # Rename PDF File
-    os.rename(job_description_path, job_description_path.replace("job_description", f"{position}_description"))
+    # Add position as subfolder
+    applications_path = os.path.join(applications_path, position)
+    os.makedirs(applications_path, exist_ok=True)
+    new_job_description_path = os.path.join(applications_path, "job_description.pdf")
+    shutil.move(job_description_path, new_job_description_path)
 
+    # Resume Sections
+    sections_dict = {}
+    section_names = set(["CONSTANT", "PROFESSIONAL_SUMMARY", "TECHNICAL_SKILLS", "EXPERIENCE", "EDUCATION", "CERTIFICATIONS", "PRACTICAL_PROJECTS"])
+
+    # Extract sections from resume text.
+    for section_name in section_names:
+        extract_section_text(resume_text, section_name, sections_dict)
+    
+    # Tailor the resume sections to the job description using OpenAI API
+    section_names.discard("CONSTANT") # Non changing content; Not to be tailored
+    section_names.discard("EDUCATION") # Non changing content; Not to be tailored
+    section_names.discard("PROFESSIONAL_SUMMARY") # To be tailored last based on experience and projects
+    for section, content in sections_dict.items():
+        if section in section_names:
+            sections_dict[section] = tailor_resume(section, content, job_description)
+
+    
+    # Build experience content for tailoring summary
+    tailored_experience = build_ordered_section_content(["PROFESSIONAL_SUMMARY", "TECHNICAL_SKILLS", "EXPERIENCE", "EDUCATION", "CERTIFICATIONS", "PRACTICAL_PROJECTS"], sections_dict)
+
+    # Tailor the summary section last to the job description using OpenAI API
+    sections_dict["PROFESSIONAL_SUMMARY"] = tailor_resume("PROFESSIONAL_SUMMARY", tailored_experience, job_description)
+    
+
+    # Build sections of tailored resume.
+    tailored_resume = build_ordered_section_content(["CONSTANT", "PROFESSIONAL_SUMMARY", "TECHNICAL_SKILLS", "EXPERIENCE", "EDUCATION", "CERTIFICATIONS", "PRACTICAL_PROJECTS"], sections_dict)
+
+    tailored_resume += "\n"
+    tailored_resume += "%-------------------------------------------\n\\end{document}"
+
+    print("INDEX OF Dec. 2016", tailored_resume.index("Dec. 2016"))
+    print("INDEX OF PRACTICAL PROJECTS", tailored_resume.index("PRACTICAL"))
     # Save the tailored resume in LaTeX format
     tailored_resume_tex_path = os.path.join(applications_path, f"{position}.tex")
     save_output(tailored_resume, tailored_resume_tex_path)
-    remove_first_line(tailored_resume_tex_path)
     print(f"Tailored LaTeX resume saved at: {tailored_resume_tex_path}")
     
     # Compile the LaTeX document to PDF
@@ -69,9 +88,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Compile a LaTeX file and move auxiliary files.")
     parser.add_argument('company', type=str, help='Company name')
     parser.add_argument('job_url', type=str, help='URL of job description')
-
     # Parse the arguments
     args = parser.parse_args()
 
     # Call main function with parsed arguments
-    main(args.company, args.job_url)
+    main(os.getenv("company", args.company), os.getenv("job_url", args.job_url))

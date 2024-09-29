@@ -35,7 +35,7 @@ class PdfGenerator:
     def _get_pdf_from_url(self, url, *args, **kwargs):
         self.driver.get(url)
 
-        time.sleep(0.3)  # allow the page to load, increase if needed
+        time.sleep(1)  # allow the page to load, increase if needed
 
         print_options = self.print_options.copy()
         result = self._send_devtools(self.driver, "Page.printToPDF", print_options)
@@ -68,6 +68,10 @@ class PdfGenerator:
         webdriver_options = ChromeOptions()
         webdriver_options.add_argument('--headless')
         webdriver_options.add_argument('--disable-gpu')
+        webdriver_options.add_argument("--no-sandbox")
+        webdriver_options.add_argument("--disable-dev-shm-usage")
+        webdriver_options.add_argument("--disable-gpu")
+        webdriver_options.add_argument("--remote-debugging-port=9222")
 
         try:
             self.driver = webdriver.Chrome(
