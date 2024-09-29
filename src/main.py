@@ -68,20 +68,24 @@ def main(company, job_url):
     
 
     # Build sections of tailored resume.
-    tailored_resume = build_ordered_section_content(["CONSTANT", "PROFESSIONAL_SUMMARY", "TECHNICAL_SKILLS", "EXPERIENCE", "EDUCATION", "CERTIFICATIONS", "PRACTICAL_PROJECTS"], sections_dict)
-
+    tailored_resume = build_ordered_section_content(["CONSTANT", "PROFESSIONAL_SUMMARY", "TECHNICAL_SKILLS", "EXPERIENCE", "EDUCATION", "CERTIFICATIONS"], sections_dict)
     tailored_resume += "\n"
     tailored_resume += "%-------------------------------------------\n\\end{document}"
+    
+    tailored_resume_w_projects = build_ordered_section_content(["CONSTANT", "PROFESSIONAL_SUMMARY", "TECHNICAL_SKILLS", "EXPERIENCE", "EDUCATION", "CERTIFICATIONS", "PRACTICAL_PROJECTS"], sections_dict)
+    tailored_resume_w_projects += "\n"
+    tailored_resume_w_projects += "%-------------------------------------------\n\\end{document}"
 
-    print("INDEX OF Dec. 2016", tailored_resume.index("Dec. 2016"))
-    print("INDEX OF PRACTICAL PROJECTS", tailored_resume.index("PRACTICAL"))
-    # Save the tailored resume in LaTeX format
+    # Save the one page tailored resume in LaTeX format
     tailored_resume_tex_path = os.path.join(applications_path, f"{position}.tex")
+    tailored_resume_w_projects_tex_path = os.path.join(applications_path, f"{position}_projects.tex")
     save_output(tailored_resume, tailored_resume_tex_path)
-    print(f"Tailored LaTeX resume saved at: {tailored_resume_tex_path}")
+    save_output(tailored_resume_w_projects, tailored_resume_w_projects_tex_path)
+    print(f"Tailored LaTeX resume saved at: {applications_path}")
     
     # Compile the LaTeX document to PDF
     compile_latex_to_pdf(tailored_resume_tex_path)
+    compile_latex_to_pdf(tailored_resume_w_projects_tex_path)
 
 if __name__ == "__main__":
     # Set up argument parser
