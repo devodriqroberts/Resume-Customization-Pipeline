@@ -21,11 +21,12 @@ A Python-based tool for customizing LaTeX resumes based on job descriptions usin
 
 ## Project Overview
 
-The Automated Resume Tailoring Tool streamlines the process of tailoring your LaTeX-based resume for different job applications. By leveraging the OpenAI API, this tool takes a job description as input and generates a personalized `.tex` file and a compiled `.pdf`.
+The Automated Resume Tailoring Tool streamlines the process of tailoring your LaTeX-based resume for different job applications. By leveraging the OpenAI API, this tool takes a job description from a URL as input and generates a personalized `.tex` file and a compiled `.pdf`.
 
 ## Features
 
 - **Resume Customization**: Automatically modify your LaTeX resume based on the job description for the specific role.
+- **PDF Extraction**: Downloads the job description as a PDF and extracts the text content.
 - **LaTeX Compilation**: Generates a tailored `.tex` file and compiles it into a PDF.
 - **Organized File Structure**: Manages input and output files, including auxiliary LaTeX files, for clean and easy access.
 
@@ -34,6 +35,7 @@ The Automated Resume Tailoring Tool streamlines the process of tailoring your La
 - **Python 3.x**: Required for running the tool and its dependencies.
 - **LaTeX Distribution**: `pdflatex` is used to compile the `.tex` file into a `.pdf`.
 - **OpenAI API Key**: An API key is required to access OpenAI's API for tailoring the resume content.
+- **Google Chrome**: Needed for Selenium to extract PDF from job description URLs.
 
 ## Installation
 
