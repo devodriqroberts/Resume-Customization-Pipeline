@@ -47,6 +47,7 @@ project_root/
 │   ├── __main__.py
 │   ├── main.py
 │   ├── resume_parser.py
+│   ├── pdf_generator.py
 │   ├── api_handler.py
 │   ├── latex_compiler.py
 │   └── utils.py
@@ -84,8 +85,9 @@ Add the following variables to your `.env` file:
 
 ```dotenv
 OPENAI_API_KEY=<Your OpenAI API Key>
-OUTPUT_PATH=<Path where input/output files are stored>
-SYSTEM_ROLE=<System role for OpenAI API>
+SYSTEM_ROLE_POSITION=<Role for extracting position>
+SYSTEM_ROLE_<SECTION>=<Role for tailoring each resume section>
+SYSTEM_LATEX_DOC_STRUCTURE=<Role for LaTeX structure>
 ```
 
 - **`OPENAI_API_KEY`**: Your API key from OpenAI.
@@ -103,22 +105,22 @@ SYSTEM_ROLE=Assistant for resume tailoring
 ## Preparing Input Files
 
 1. **`main.tex`**: Place your base LaTeX resume at `<OUTPUT_PATH>/main.tex`.
-2. **Job Descriptions (`<company>/<position>.rtf`)**:
-   Store the `.rtf` files containing job descriptions in folders structured as follows:
+2. **Job Descriptions**:
+   Store .pdf job descriptions in folders as:
    ```
-   <OUTPUT_PATH>/<company>/<position>.rtf
+   <OUTPUT_PATH>/<date>/<company>/<position>/job_description.pdf
    ```
-   - Replace `<company>` and `<position>` with the respective company name and job position.
 
 **Example Directory Structure**:
 
 ```
 <OUTPUT_PATH>/
-├── main.tex                     # Your base LaTeX resume
-├── Google/
-│   ├── SoftwareEngineer.rtf     # Job description for a specific position
-│   ├── SoftwareEngineer.tex     # Generated tailored LaTeX file
-│   └── SoftwareEngineer.pdf     # Compiled tailored PDF resume
+├── latex-resume/
+│   └── main.tex
+├── <date>/
+│   └── Google/
+│       └── software_engineer/
+│           └── job_description.pdf
 ```
 
 ## Running the Tool
@@ -130,16 +132,15 @@ You can run the tool either from the project root using the `src` module or dire
 Run the following command from the project root:
 
 ```bash
-python -m src <company_name> <position_name>
+python -m src <company_name> <job_url>
 ```
 
 - Replace `<company_name>` with the company you're applying to.
-- Replace `<position_name>` with the job position/title.
 
 **Example**:
 
 ```bash
-python -m src Google SoftwareEngineer
+python -m src Google "https://jobs.google.com/12345"
 ```
 
 ### Option 2: Running from `src` Directory
@@ -148,23 +149,23 @@ Alternatively, navigate to the `src` directory and run:
 
 ```bash
 cd src
-python main.py <company_name> <position_name>
+python main.py <company_name> <job_url>
 ```
 
 **Example**:
 
 ```bash
-python main.py Google SoftwareEngineer
+python main.py Google "https://jobs.google.com/12345"
 ```
 
 ## Output
 
-- **Tailored LaTeX File**: `<OUTPUT_PATH>/<company>/<position>.tex`
-- **Compiled PDF**: `<OUTPUT_PATH>/<company>/<position>.pdf`
-- **Auxiliary LaTeX Files**: Moved to an `aux_files/` directory inside `<OUTPUT_PATH>/<company>`.
+- **Tailored LaTeX File**: ` <OUTPUT_PATH>/<date>/<company>/<position>/<position>.tex`
+- **Compiled PDF**: `<OUTPUT_PATH>/<date>/<company>/<position>/<position>.pdf`
+- **Auxiliary LaTeX Files**: Moved to an `aux_files/` directory inside `<OUTPUT_PATH>/<date>/<company>/<position>`.
 
 ## Troubleshooting
 
 - If LaTeX compilation fails, ensure all necessary LaTeX packages are installed.
 - Verify that the `.env` file is correctly set with all required variables.
-- Check that the input files (`main.tex` and job description `.rtf` files) are in the correct location.
+- Check the correct paths for input files (main.tex, job description PDFs).
