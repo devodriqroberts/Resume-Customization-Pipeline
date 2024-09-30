@@ -23,7 +23,8 @@ def save_description_pdf(url, job_description_path):
     pdf_file = PdfGenerator([url]).main()
     # save pdf to file
     with open(job_description_path, "wb") as outfile:
-        outfile.write(pdf_file[0].getbuffer())
+        # outfile.write(pdf_file[0].getbuffer())
+        outfile.write(pdf_file[0])  # directly write bytes - Playwright
 
 def extract_section_text(text, section_name, hashmap):
     """Extract section substring from a resume text

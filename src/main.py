@@ -12,7 +12,11 @@ from src.latex_compiler import compile_latex_to_pdf, move_auxiliary_files
 load_dotenv()
 
 def main(company, job_url):
-    output_path = os.getenv("OUTPUT_PATH")
+    if os.getenv("DOCKER_USE"):
+        output_path = os.getenv("DOCKER_OUTPUT_PATH")
+    else:
+        output_path = os.getenv("LOCAL_OUTPUT_PATH")
+
     resume_path = os.path.join(output_path, "latex-resume", "main.tex")
 
     applications_path = os.path.join(output_path, "applications", str(datetime.today().date()), company)
