@@ -23,7 +23,8 @@ def main(company, job_url):
     job_description_path = os.path.join(applications_path, "job_description.pdf")
 
     # Save job description as PDF file
-    save_description_pdf(job_url, job_description_path)
+    if not os.path.exists(job_description_path):
+        save_description_pdf(job_url, job_description_path)
 
     # Read the LaTeX resume
     resume_text = read_file_content(resume_path)
@@ -32,12 +33,12 @@ def main(company, job_url):
     job_description = read_pdf_content(job_description_path)
 
     # Extract position
-    position = extract_job_position(job_description)
-    if not position:
+    extracted_position = extract_job_position(job_description)
+    if not extracted_position:
         raise Exception("No position returned")
     
     # Sanitize and format position name
-    position = position.split()
+    position = extracted_position.split()
     position = ["".join(char for char in word if char.isalnum()) for word in position]
     position = "_".join(word.lower() for word in position)
 
@@ -49,7 +50,7 @@ def main(company, job_url):
 
     # Resume Sections
     sections_dict = {}
-    section_names = set(["CONSTANT", "PROFESSIONAL_SUMMARY", "TECHNICAL_SKILLS", "EXPERIENCE", "EDUCATION", "CERTIFICATIONS", "PRACTICAL_PROJECTS"])
+    section_names = set(["CONSTANT", "TARGET_TITLE", "PROFESSIONAL_SUMMARY", "TECHNICAL_SKILLS", "EXPERIENCE", "EDUCATION", "CERTIFICATIONS", "PRACTICAL_PROJECTS"])
 
     # Extract sections from resume text.
     for section_name in section_names:
@@ -72,11 +73,11 @@ def main(company, job_url):
     
 
     # Build sections of tailored resume.
-    tailored_resume = build_ordered_section_content(["CONSTANT", "PROFESSIONAL_SUMMARY", "TECHNICAL_SKILLS", "EXPERIENCE", "EDUCATION", "CERTIFICATIONS"], sections_dict)
+    tailored_resume = build_ordered_section_content(["CONSTANT", "TARGET_TITLE", "PROFESSIONAL_SUMMARY", "TECHNICAL_SKILLS", "EXPERIENCE", "EDUCATION", "CERTIFICATIONS"], sections_dict)
     tailored_resume += "\n"
     tailored_resume += "%-------------------------------------------\n\\end{document}"
     
-    tailored_resume_w_projects = build_ordered_section_content(["CONSTANT", "PROFESSIONAL_SUMMARY", "TECHNICAL_SKILLS", "EXPERIENCE", "EDUCATION", "CERTIFICATIONS", "PRACTICAL_PROJECTS"], sections_dict)
+    tailored_resume_w_projects = build_ordered_section_content(["CONSTANT", "TARGET_TITLE", "PROFESSIONAL_SUMMARY", "TECHNICAL_SKILLS", "EXPERIENCE", "EDUCATION", "CERTIFICATIONS", "PRACTICAL_PROJECTS"], sections_dict)
     tailored_resume_w_projects += "\n"
     tailored_resume_w_projects += "%-------------------------------------------\n\\end{document}"
 

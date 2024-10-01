@@ -10,7 +10,8 @@ class PdfGenerator:
         browser = await playwright.chromium.launch(headless=True)
         context = await browser.new_context()
         page = await context.new_page()
-        await page.goto(url)
+        await page.goto(url, wait_until="networkidle")
+        await asyncio.sleep(2)  # Optional extra delay of 2 seconds
         pdf_content = await page.pdf(format="A4")  # Adjust options as needed
         await browser.close()
         return pdf_content
