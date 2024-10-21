@@ -57,12 +57,9 @@ def main(company, job_url):
         extract_section_text(resume_text, section_name, sections_dict)
     
     # Tailor the resume sections to the job description using OpenAI API
-    section_names.discard("CONSTANT") # Non changing content; Not to be tailored
-    section_names.discard("EDUCATION") # Non changing content; Not to be tailored
-    section_names.discard("PROFESSIONAL_SUMMARY") # To be tailored last based on experience and projects
-    for section, content in sections_dict.items():
-        if section in section_names:
-            sections_dict[section] = tailor_resume(section, content, job_description)
+    sections = ["TARGET_TITLE", "TECHNICAL_SKILLS", "EXPERIENCE", "CERTIFICATIONS", "PRACTICAL_PROJECTS"]
+    for section in sections:
+        sections_dict[section] = tailor_resume(section, sections_dict[section], job_description)
 
     
     # Build experience content for tailoring summary
