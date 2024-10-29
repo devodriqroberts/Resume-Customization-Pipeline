@@ -4,7 +4,7 @@ FROM python:3.12
 RUN apt-get update && apt-get install -y wget ca-certificates gnupg
 
 # Install Playwright and browsers
-RUN pip install playwright && playwright install && playwright install-deps 
+RUN pip install playwright && playwright install && playwright install-deps chromium
 
 # Install LaTeX (BasicTeX equivalent)
 RUN apt-get update && apt-get install -y \
