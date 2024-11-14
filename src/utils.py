@@ -35,7 +35,7 @@ def extract_section_text(text, section_name, hashmap):
     """
     start_token = "%" + "-"*10 + section_name + "-"*10
     end_token = "%" + "-"*10 + "END_" + section_name + "-"*10
-    
+
     start_index = text.index(start_token)
     end_token_length = len(end_token)
     end_index = text.index(end_token) + end_token_length + 1

@@ -11,18 +11,25 @@ from src.latex_compiler import compile_latex_to_pdf, move_auxiliary_files
 
 load_dotenv()
 
+# Get the parent directory
+parent_dir = os.path.dirname(os.getcwd())
+
+
 def main(company, job_url):
     if os.getenv("DOCKER_USE"):
-        output_path = os.getenv("DOCKER_OUTPUT_PATH")
+        output_path = "/app"
     else:
-        output_path = os.getenv("LOCAL_OUTPUT_PATH")
+        output_path = parent_dir
 
     resume_path = os.path.join(output_path, "latex-resume", "main.tex")
 
+    # Create Applications path
     applications_path = os.path.join(output_path, "applications", str(datetime.today().date()), company)
-    job_description_path = os.path.join(applications_path, "job_description.pdf")
+    if not os.path.exists(applications_path):
+        os.makedirs(applications_path)
 
     # Save job description as PDF file
+    job_description_path = os.path.join(applications_path, "job_description.pdf")
     if not os.path.exists(job_description_path):
         save_description_pdf(job_url, job_description_path)
 
@@ -50,14 +57,14 @@ def main(company, job_url):
 
     # Resume Sections
     sections_dict = {}
-    section_names = set(["CONSTANT", "TARGET_TITLE", "PROFESSIONAL_SUMMARY", "TECHNICAL_SKILLS", "EXPERIENCE", "EDUCATION", "CERTIFICATIONS", "PRACTICAL_PROJECTS"])
+    section_names = set(["CONSTANT", "PROFESSIONAL_SUMMARY", "TECHNICAL_SKILLS", "EXPERIENCE", "EDUCATION", "CERTIFICATIONS", "PRACTICAL_PROJECTS"])
 
     # Extract sections from resume text.
     for section_name in section_names:
         extract_section_text(resume_text, section_name, sections_dict)
     
     # Tailor the resume sections to the job description using OpenAI API
-    sections = ["TARGET_TITLE", "TECHNICAL_SKILLS", "EXPERIENCE", "CERTIFICATIONS", "PRACTICAL_PROJECTS"]
+    sections = ["TECHNICAL_SKILLS", "EXPERIENCE", "CERTIFICATIONS", "PRACTICAL_PROJECTS"]
     for section in sections:
         sections_dict[section] = tailor_resume(section, sections_dict[section], job_description)
 
@@ -70,11 +77,11 @@ def main(company, job_url):
     
 
     # Build sections of tailored resume.
-    tailored_resume = build_ordered_section_content(["CONSTANT", "TARGET_TITLE", "PROFESSIONAL_SUMMARY", "TECHNICAL_SKILLS", "EXPERIENCE", "EDUCATION", "CERTIFICATIONS"], sections_dict)
+    tailored_resume = build_ordered_section_content(["CONSTANT", "PROFESSIONAL_SUMMARY", "TECHNICAL_SKILLS", "EXPERIENCE", "EDUCATION", "CERTIFICATIONS"], sections_dict)
     tailored_resume += "\n"
     tailored_resume += "%-------------------------------------------\n\\end{document}"
     
-    tailored_resume_w_projects = build_ordered_section_content(["CONSTANT", "TARGET_TITLE", "PROFESSIONAL_SUMMARY", "TECHNICAL_SKILLS", "EXPERIENCE", "EDUCATION", "CERTIFICATIONS", "PRACTICAL_PROJECTS"], sections_dict)
+    tailored_resume_w_projects = build_ordered_section_content(["CONSTANT", "PROFESSIONAL_SUMMARY", "TECHNICAL_SKILLS", "EXPERIENCE", "EDUCATION", "CERTIFICATIONS", "PRACTICAL_PROJECTS"], sections_dict)
     tailored_resume_w_projects += "\n"
     tailored_resume_w_projects += "%-------------------------------------------\n\\end{document}"
 
